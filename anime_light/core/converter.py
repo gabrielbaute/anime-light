@@ -121,10 +121,10 @@ class VideoConverter(ABC):
 
             if process.wait() == 0:
                 shutil.move(self.temp_path, self.output_path)
-                self.console.print(f"[green]✅ Conversión exitosa: {self.output_path}")
+                self.console.print(f"\n[green]✅ Conversión exitosa: {self.output_path}")
                 return True
             else:
-                self.console.print("[red]❌ Error en la conversión")
+                self.console.print("\n[red]❌ Error en la conversión\n")
                 return False
 
         except FileNotFoundError:
