@@ -10,4 +10,5 @@ def create_parser():
     parser.add_argument("--output-dir", default=None, help="Directorio base de salida")
     parser.add_argument("--recursive", action="store_true", help="Procesar subcarpetas")
     parser.add_argument("--exclude", nargs="+", default=[], help="Patrones para excluir archivos")
+    parser.add_argument("--threads", type=int, default=1, help="Número de hilos CPU a usar (1-2, etc)")
     return parser
