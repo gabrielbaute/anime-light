@@ -140,6 +140,16 @@ class VideoConverter(ABC):
         self.temp_path = os.path.join(self.temp_dir, self.output_filename)
         self.output_path = os.path.join(self.output_dir, self.output_filename)
 
+class Convert360p(VideoConverter):
+    """Conversor específico para resolución 360p (640x360)."""
+    
+    def _generate_output_filename(self) -> str:
+        return f"{os.path.splitext(self.input_filename)[0]}[360p].mp4"
+
+    def _get_ffmpeg_scale(self) -> str:
+        return "scale=640:360:flags=lanczos"  # Relación de aspecto 16:9
+
+
 class Convert480p(VideoConverter):
     """Conversor específico para resolución 480p (640x480)."""
     
@@ -147,7 +157,7 @@ class Convert480p(VideoConverter):
         return f"{os.path.splitext(self.input_filename)[0]}[480p].mp4"
 
     def _get_ffmpeg_scale(self) -> str:
-        return "scale=640:480:flags=lanczos"
+        return "scale=640:480:flags=lanczos"  # Relación 4:3 (común en anime antiguo)
 
 
 class Convert720p(VideoConverter):
@@ -157,4 +167,4 @@ class Convert720p(VideoConverter):
         return f"{os.path.splitext(self.input_filename)[0]}[720p].mp4"
 
     def _get_ffmpeg_scale(self) -> str:
-        return "scale=1280:720:flags=lanczos"
+        return "scale=1280:720:flags=lanczos"  # 16:9 HD
