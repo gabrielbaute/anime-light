@@ -13,3 +13,8 @@ testing/
 temp/
 output/
 test.py
+
+# Poetry / build artifacts
+dist/
+build/
+*.egg-info/
