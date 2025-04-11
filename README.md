@@ -6,8 +6,11 @@
 [![PyPI Version](https://img.shields.io/pypi/v/anime-light?color=blue&logo=pypi&logoColor=white)](https://pypi.org/project/anime-light/)
 [![Code Style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-**Conversor optimizado de anime a resoluciones ligeras (480p/720p) usando FFmpeg.**  
-Bueno, esta es una solución para las personas que, como yo, tienen realmente poco espacio de almacenamiento pero, aún así, no quieren deshacerse de todos los archivos que tienen. Lo principal para mi era poder hacer streaming de los anime que descargo por Jellyfin, sobre todo a mi teléfono... razón por la cual, no siempre requiero archivos en 1080p, y 480p-720p suele ser un estpandar de calidad aceptable para mi... pero encontrar archivos en 480 o en 720 ligeros (algo que en el anime, que tiene muchos frames fijos o con pocos cambios) es dificil encontrar últimamente, así que quise implementar esta solución y me ha funcionado muy bien. Lo siguiente fue implementarla en forma de CLI!...
+**Conversor optimizado de anime a resoluciones ligeras (360p/480p/720p/1080p) usando FFmpeg.**  
+
+Bueno, esta es una solución para las personas que, como yo, tienen realmente poco espacio de almacenamiento pero, aún así, no quieren deshacerse de todos los archivos que tienen. Lo principal para mi era poder hacer streaming de los anime que descargo para Jellyfin, sobre todo a mi teléfono... razón por la cual, no siempre requiero archivos en 1080p, y 480p-720p suele ser un estpandar de calidad aceptable para mi... pero encontrar archivos en 480 o en 720 ligeros (algo que en el anime, que tiene muchos frames fijos o con pocos cambios) es dificil últimamente, así que quise implementar esta solución y me ha funcionado muy bien. Lo siguiente fue implementarla en forma de CLI!
+
+La librería implementa una cli para convertir archivos de anime (esto es importante, **está optimizado para este estilo**, ya que el anime se caracteriza por tener muchas imágenes estáticas entre frame y frame y manejar una tasa de unos 24 cuadros por segundo). Se puede usar tanto como librería como mediante la CLI. De momento se puede convertir a 360p, 480p, 720p y 1080p (es decir, SD y HD).
 
 Sin más, espero que les parezca útil y, si se les ocurre alguna cosa que agregar, estaré encantado de aceptar colaboraciones y/o sugerencias!
 
@@ -88,7 +91,7 @@ anime-light "~/anime/Shingeki_no_Kyojin/" --resolution 720p --output-dir "~/conv
 ## 📌 Notas importantes
 - ✅ **Formatos soportados**: `.mp4`, `.mkv`, `.avi`, `.mov`.
 - ⚠️ **Espacios en rutas**: Usa comillas: `"ruta con espacios/video.mp4"`.
-- 🔄 **Sobrescritura**: Los archivos existentes se sobrescriben automáticamente.
+- 🔄 **Sobrescritura**: Los archivos existentes se sobrescriben automáticamente en el output, pero no se toca los archivos originales. Se genera un directorio "temp" para evitar posibles conflictos y no contaminar el directorio de salida.
 
 ## 🐛 Reportar problemas
 ¿Encontraste un error? ¡Abre un [issue](https://github.com/gabrielbaute/anime-light/issues) en GitHub!
