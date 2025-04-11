@@ -8,7 +8,7 @@ build-backend = "poetry.core.masonry.api"
 # ------------------------------------------------
 name = "anime-light"
 version = "0.2.0"
-description = "Conversor de anime a resoluciones ligeras (480p/720p) con FFmpeg"
+description = "Conversor de anime a resoluciones ligeras (360p/480p/720p/1080p) con FFmpeg"
 authors = ["Gabriel Baute <gabrielbaute@gmail.com>"]
 license = "MIT"
 readme = "README.md"
