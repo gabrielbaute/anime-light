@@ -7,7 +7,7 @@ build-backend = "poetry.core.masonry.api"
 # Metadatos básicos del paquete
 # ------------------------------------------------
 name = "anime-light"
-version = "0.1.0"
+version = "0.2.0"
 description = "Conversor de anime a resoluciones ligeras (480p/720p) con FFmpeg"
 authors = ["Gabriel Baute <gabrielbaute@gmail.com>"]
 license = "MIT"
@@ -34,7 +34,7 @@ include = [
 # ------------------------------------------------
 # Puntos de entrada para comandos CLI
 # ------------------------------------------------
-anime-light = "anime_light.cli:main"
+anime-light = "anime_light.cli.main:main"
 
 [tool.poetry.dependencies]
 # ------------------------------------------------
