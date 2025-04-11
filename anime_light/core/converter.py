@@ -69,6 +69,7 @@ class VideoConverter(ABC):
         self,
         crf: int = 23,
         preset: str = "slow",
+        threads: int = 1,
         audio_bitrate: str = "128k",
         progress_callback=None,
         remove_temp: bool = True
@@ -88,6 +89,7 @@ class VideoConverter(ABC):
         cmd = [
             "ffmpeg",
             "-i", self.input_path,
+            "-threads", str(threads),
             "-vf", self._get_ffmpeg_scale(),
             "-c:v", "libx264",
             "-crf", str(crf),
