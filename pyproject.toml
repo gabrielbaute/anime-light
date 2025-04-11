@@ -1,0 +1,64 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+# ------------------------------------------------
+# Metadatos básicos del paquete
+# ------------------------------------------------
+name = "anime-light"
+version = "0.1.0"
+description = "Conversor de anime a resoluciones ligeras (480p/720p) con FFmpeg"
+authors = ["Gabriel Baute <gabrielbaute@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/gabrielbaute/anime-light"
+repository = "https://github.com/gabrielbaute/anime-light"
+keywords = ["anime", "video", "converter", "ffmpeg"]
+
+# ------------------------------------------------
+# Configuración de paquetes y directorios
+# ------------------------------------------------
+packages = [
+    { include = "anime_light" },  # Incluye todo el directorio `anime_light`
+    # { include = "otro_modulo" },  # Si tienes otros módulos
+]
+
+# Opcional: Incluir archivos adicionales (como datos estáticos)
+include = [
+    "LICENSE",
+    "CHANGELOG.md",
+]
+
+[tool.poetry.scripts]
+# ------------------------------------------------
+# Puntos de entrada para comandos CLI
+# ------------------------------------------------
+anime-light = "anime_light.cli:main"
+
+[tool.poetry.dependencies]
+# ------------------------------------------------
+# Dependencias principales
+# ------------------------------------------------
+python = "^3.8"
+rich = "^13.0.0"
+click = "^8.1.0"
+
+# ------------------------------------------------
+# Dependencias opcionales
+# ------------------------------------------------
+[tool.poetry.group.dev.dependencies] 
+pytest = "^7.0"
+black = "^23.0"
+mypy = "^1.0"
+
+[tool.poetry.urls]  # URLs adicionales (opcional)
+"Bug Tracker" = "https://github.com/gabrielbaute/anime-light/issues"
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.pytest.ini_options]
+python_files = "test_*.py"
+addopts = "--verbose"
