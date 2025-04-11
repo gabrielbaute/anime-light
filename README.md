@@ -52,10 +52,12 @@ anime-light "video.mp4" --audio-bitrate 64k
 
 ## 📊 Tabla de parámetros recomendados
 
-| Resolución | CRF  | Preset   | Tamaño aproximado (24 min) | Uso recomendado |
-|------------|------|----------|----------------------------|----------------|
-| 480p       | 23-25 | `slow`   | 80-100 MB                 | Almacenamiento local |
-| 720p       | 20-22 | `slower` | 150-200 MB                | Streaming en casa |
+| Resolución | CRF Recomendado | Preset   | Uso típico                     |
+|------------|-----------------|----------|--------------------------------|
+| 360p       | 26-28           | `fast`   | Móviles o streaming limitado   |
+| 480p       | 23-25           | `slow`   | Equilibrio calidad-tamaño      |
+| 720p       | 20-22           | `slow`   | HD en pantallas pequeñas       |
+| 1080p      | 18-20           | `slower` | Full HD en monitores grandes   |
 
 > ℹ️ **Nota**: Valores CRF más bajos = mejor calidad pero mayor tamaño.
 
