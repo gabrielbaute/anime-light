@@ -92,4 +92,4 @@ anime-light "~/anime/Shingeki_no_Kyojin/" --resolution 720p --output-dir "~/conv
 ¿Encontraste un error? ¡Abre un [issue](https://github.com/gabrielbaute/anime-light/issues) en GitHub!
 
 ## 📜 Licencia
-MIT[LICENSE] © [Gabriel Baute](https://github.com/gabrielbaute)
+MIT © [Gabriel Baute](https://github.com/gabrielbaute)
