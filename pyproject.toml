@@ -7,7 +7,7 @@ build-backend = "poetry.core.masonry.api"
 # Metadatos básicos del paquete
 # ------------------------------------------------
 name = "anime-light"
-version = "0.2.0"
+version = "0.2.1"
 description = "Conversor de anime a resoluciones ligeras (360p/480p/720p/1080p) con FFmpeg"
 authors = ["Gabriel Baute <gabrielbaute@gmail.com>"]
 license = "MIT"
@@ -51,6 +51,7 @@ click = "^8.1.0"
 pytest = "^7.0"
 black = "^23.0"
 mypy = "^1.0"
+bumpver = "^2024.1130"
 
 [tool.poetry.urls]  # URLs adicionales (opcional)
 "Bug Tracker" = "https://github.com/gabrielbaute/anime-light/issues"
@@ -62,3 +63,25 @@ target-version = ['py38']
 [tool.pytest.ini_options]
 python_files = "test_*.py"
 addopts = "--verbose"
+
+[tool.bumpver]
+current_version = "2025.1001-alpha"
+version_pattern = "YYYY.BUILD[-TAG]"
+commit_message = "bump version {old_version} -> {new_version}"
+tag_message = "{new_version}"
+tag_scope = "default"
+pre_commit_hook = ""
+post_commit_hook = ""
+commit = true
+tag = true
+push = true
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = [
+    'current_version = "{version}"',
+]
+"README.md" = [
+    "{version}",
+    "{pep440_version}",
+]
+
