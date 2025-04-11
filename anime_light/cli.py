@@ -6,9 +6,18 @@ import fnmatch
 from pathlib import Path
 from rich.console import Console
 from rich.progress import Progress, BarColumn, TextColumn, TimeRemainingColumn
-from anime_light.core.converter import Convert480p, Convert720p
+from anime_light.core.converter import Convert360p, Convert480p, Convert720p, Convert1080p
 
 console = Console()
+
+def select_converter(resolution: str):
+    converters = {
+        "360p": Convert360p,
+        "480p": Convert480p,
+        "720p": Convert720p,
+        "1080p": Convert1080p
+    }
+    return converters.get(resolution)
 
 def check_ffmpeg():
     """Verifica si FFmpeg está instalado."""
@@ -90,7 +99,7 @@ def main():
 
     parser = argparse.ArgumentParser(description="Convierte videos de anime a resoluciones ligeras.")
     parser.add_argument("input", help="Ruta del archivo o carpeta")
-    parser.add_argument("-r", "--resolution", choices=["480p", "720p"], default="480p")
+    parser.add_argument("-r", "--resolution", choices=["360p", "480p", "720p", "1080p"], default="480p")
     parser.add_argument("--crf", type=int, default=23, help="Calidad (18-28, menor=mejor)")
     parser.add_argument("--preset", default="slow", choices=["fast", "slow", "veryslow"])
     parser.add_argument("--output-dir", default=None, help="Directorio base de salida (las subcarpetas 480p/720p se crearán aquí)")
