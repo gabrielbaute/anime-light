@@ -1,0 +1,15 @@
+# Virtual Environment
+.venv/
+venv/
+env/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Other files and directories to ignore
+testing/
+temp/
+output/
+test.py
