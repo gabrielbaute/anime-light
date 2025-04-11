@@ -16,6 +16,10 @@ def main():
     parser = create_parser()
     args = parser.parse_args()
 
+    if args.cool_mode:
+        args.preset = "fast"
+        args.threads = 1
+
     # Configurar directorios de salida
     output_base_dir = args.output_dir if args.output_dir else os.path.join(
         os.path.dirname(args.input) if os.path.isfile(args.input) else args.input,
