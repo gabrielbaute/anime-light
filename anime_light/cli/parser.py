@@ -12,4 +12,5 @@ def create_parser():
     parser.add_argument("--exclude", nargs="+", default=[], help="Patrones para excluir archivos")
     parser.add_argument("--threads", type=int, default=1, help="Número de hilos CPU a usar (1-2, etc)")
     parser.add_argument("--cool-mode", action="store_true", help="Prioriza reducir temperatura (usa preset fast y 1 hilo)")
+    parser.add_argument("--use-gpu", type=str, choices=["qsv", "cuda", "vaapi", "d3d12va"], default=None, help="Usar aceleración por GPU (opciones: qsv para Intel, cuda para NVIDIA, etc.)")
     return parser
