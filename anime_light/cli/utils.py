@@ -25,3 +25,25 @@ def select_converter(resolution: str):
     if resolution not in converters:
         raise ValueError(f"Resolución no soportada: {resolution}")
     return converters[resolution]
+
+def validate_gpu_acceleration(method: str) -> bool:
+    """Versión optimizada usando get_available_hwaccels()."""
+    return method.lower() in get_available_hwaccels()
+
+def get_available_hwaccels() -> list:
+    """Obtiene métodos de aceleración disponibles, ignorando la primera línea (header)."""
+    try:
+        result = subprocess.run(
+            ["ffmpeg", "-hide_banner", "-hwaccels"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            check=True
+        )
+        # Filtra líneas y excluye el header "Hardware acceleration methods:"
+        return [
+            line.strip() for line in result.stdout.splitlines()[1:] 
+            if line.strip() and not line.startswith("Hardware")
+        ]
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return []
