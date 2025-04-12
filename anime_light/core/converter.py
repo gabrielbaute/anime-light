@@ -6,6 +6,7 @@ from pathlib import Path
 from rich.progress import Progress
 from rich.console import Console
 import subprocess
+from typing import Optional
 
 class VideoConverter(ABC):
     """Clase base abstracta para conversiones de video con FFmpeg."""
@@ -29,6 +30,38 @@ class VideoConverter(ABC):
         self.output_filename = self._generate_output_filename()
         self.temp_path = os.path.join(self.temp_dir, self.output_filename)
         self.output_path = os.path.join(self.output_dir, self.output_filename)
+
+
+    def _build_gpu_params(self, gpu_method: str) -> list:
+        """Genera parámetros específicos para cada método de GPU."""
+        gpu_params = []
+        
+        if gpu_method == "qsv":  # Intel
+            gpu_params.extend([
+                "-hwaccel", "qsv",
+                "-hwaccel_output_format", "qsv",
+                "-c:v", "h264_qsv",
+                "-global_quality", str(self.crf),  # Mapea CRF a calidad en QSV
+                "-preset", "fast"
+            ])
+        elif gpu_method == "cuda":  # NVIDIA
+            gpu_params.extend([
+                "-hwaccel", "cuda",
+                "-hwaccel_output_format", "cuda",
+                "-c:v", "h264_nvenc",
+                "-cq", str(self.crf),  # NVENC usa -cq (similar a CRF)
+                "-preset", "p4"        # p1 (más rápido) a p7 (mejor compresión)
+            ])
+        elif gpu_method == "vaapi":  # AMD/Linux
+            gpu_params.extend([
+                "-hwaccel", "vaapi",
+                "-hwaccel_output_format", "vaapi",
+                "-c:v", "h264_vaapi",
+                "-qp", str(self.crf),  # VAAPI usa -qp
+                "-quality", "speed"
+            ])
+        
+        return gpu_params
 
     @abstractmethod
     def _generate_output_filename(self) -> str:
@@ -69,6 +102,7 @@ class VideoConverter(ABC):
         self,
         crf: int = 23,
         preset: str = "slow",
+        gpu_method: Optional[str] = None,
         threads: int = 1,
         audio_bitrate: str = "128k",
         progress_callback=None,
@@ -86,21 +120,34 @@ class VideoConverter(ABC):
         Returns:
             bool: True si la conversión fue exitosa.
         """
-        cmd = [
-            "ffmpeg",
-            "-i", self.input_path,
-            "-threads", str(threads),
-            "-vf", self._get_ffmpeg_scale(),
-            "-c:v", "libx264",
-            "-crf", str(crf),
-            "-preset", preset,
+        cmd = ["ffmpeg"]
+
+        if gpu_method:
+            cmd.extend(self._build_gpu_params(gpu_method))
+            # Escalado específico para GPU
+            if gpu_method == "qsv":
+                cmd.extend(["-vf", f"scale_qsv={self._get_ffmpeg_scale().replace('scale=', '')}"])
+            elif gpu_method == "cuda":
+                cmd.extend(["-vf", f"scale_cuda={self._get_ffmpeg_scale().replace('scale=', '')}"])
+        else:
+            cmd.extend([
+                "-i", self.input_path,
+                "-threads", str(threads),
+                "-vf", self._get_ffmpeg_scale(),
+                "-c:v", "libx264",
+                "-crf", str(crf),
+                "-preset", preset
+            ])
+        
+        # 2. Añade parámetros comunes (audio, overwrite)
+        cmd.extend([
             "-tune", "animation",
             "-pix_fmt", "yuv420p",
             "-c:a", "aac",
             "-b:a", audio_bitrate,
             "-y",
             self.temp_path
-        ]
+        ])
         
         try:
             process = subprocess.Popen(cmd, stderr=subprocess.PIPE, universal_newlines=True)
