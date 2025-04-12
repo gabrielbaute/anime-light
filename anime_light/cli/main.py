@@ -1,11 +1,12 @@
-from anime_light.cli.parser import create_parser
-from anime_light.cli.commands import process_single_file, process_batch
-from anime_light.cli.utils import check_ffmpeg
 import sys
 import os
 from pathlib import Path
 from rich.console import Console
 from rich.progress import Progress, BarColumn, TextColumn, TimeRemainingColumn
+
+from anime_light.cli.parser import create_parser
+from anime_light.cli.commands import process_single_file, process_batch
+from anime_light.cli.utils import check_ffmpeg, validate_gpu_acceleration, get_available_hwaccels
 
 console = Console()
 
@@ -19,6 +20,15 @@ def main():
     if args.cool_mode:
         args.preset = "fast"
         args.threads = 1
+    
+    if args.use_gpu:
+        available_methods = get_available_hwaccels()
+        if not validate_gpu_acceleration(args.use_gpu):
+            console.print(f"[red]❌ El método '{args.use_gpu}' no está disponible.")
+            console.print(f"[yellow]ℹ️ Métodos detectados: {', '.join(available_methods) or 'Ninguno'}")
+            sys.exit(1)
+        else:
+            console.print(f"[green]✓ Usando aceleración {args.use_gpu.upper()} (métodos disponibles: {', '.join(available_methods)})")
 
     # Configurar directorios de salida
     output_base_dir = args.output_dir if args.output_dir else os.path.join(
