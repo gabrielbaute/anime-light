@@ -49,7 +49,7 @@ def main():
             TextColumn("[bold green]{task.fields[filename]}"),
         ) as progress:
             if process_single_file(args.input, output_dir, args.resolution, args.crf, args.preset, progress):
-                console.print(f"[green]✓ Conversión completada! Guardado en: {output_dir}")
+                console.print(f"[green]✓ Conversión completada!")
     
     elif os.path.isdir(args.input):
         # Modo batch

@@ -2,7 +2,14 @@ import argparse
 
 def create_parser():
     """Configura los argumentos de línea de comandos."""
-    parser = argparse.ArgumentParser(description="Convierte videos de anime a resoluciones ligeras.")
+    parser = argparse.ArgumentParser(
+        prog="Anime-light",
+        usage="Convierte archivos de video a mp4 ligero mediante ffmpeg.",
+        description="Convierte videos de anime a resoluciones ligeras.",
+        epilog="Ejemplo: anime-light input.mkv -r 720p --crf 23 --preset slow --output-dir ./output",
+        add_help=True,
+        allow_abbrev=True,
+        exit_on_error=True,)
     parser.add_argument("input", help="Ruta del archivo o carpeta")
     parser.add_argument("-r", "--resolution", choices=["360p", "480p", "720p", "1080p"], default="480p")
     parser.add_argument("--crf", type=int, default=23, help="Calidad (18-28, menor=mejor)")
