@@ -53,6 +53,32 @@ anime-light "video.mp4" --output-dir "D:/anime_convertido"
 anime-light "video.mp4" --audio-bitrate 64k
 ```
 
+### Sobre uso de GPU
+
+He estado intentando agregar soporte para el manejo de GPU, pero la verdad no sé si esa parte está funcionando bien. En todo caso, podrán probar con opciones como:
+
+1. **Para Intel QSV**:
+   ```bash
+   anime-light "video.mp4" --use-gpu qsv
+   ```
+
+2. **Para NVIDIA CUDA**:
+   ```bash
+   anime-light "video.mp4" --use-gpu cuda
+   ```
+
+#### **Métodos según GPU que están incluídos en el código**
+| GPU               | Método óptimo | Argumento       |
+|-------------------|---------------|-----------------|
+| Intel HD 4xxx+    | QSV           | `--use-gpu qsv` |
+| NVIDIA            | CUDA          | `--use-gpu cuda`|
+| AMD (Linux)       | VAAPI         | `--use-gpu vaapi`|
+| AMD (Windows)     | D3D11VA       | `--use-gpu d3d11va`|
+
+Sinceramente, estoy desarrollando esto en un equipo algo viejo y limitado (un i3 de 4ta), así que el primer caso, el de una GPU Intel integrada es l oque disponía, pero si les soy sincero, no he logrado determinar si estoy usando bien los recursos (o si, siquiera, los estoy empleando)... si alguien con más experiencia y conocimientos al respecto está dispuesto a chequear o mejorar esa parte, bienvenida sea la PR!
+
+---
+
 ## 📊 Tabla de parámetros recomendados
 
 | Resolución | CRF Recomendado | Preset   | Uso típico                     |
