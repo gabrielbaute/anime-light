@@ -1,0 +1,75 @@
+<!-- Footer de la aplicación -->
+<footer class="footer has-background-grey-lighter">
+    <div class="container">
+      <div class="columns is-centered">
+        <!-- Columna: Información -->
+        <div class="column is-4">
+          <div class="content has-text-centered-mobile">
+            <p>
+              <span class="icon-text">
+                <span class="icon">
+                  <i class="fas fa-code-branch"></i>
+                </span>
+                <span>
+                  <strong>{{ app_name }}</strong> v{{ app_version }}
+                </span>
+              </span>
+            </p>
+            <p class="is-size-7">
+              <span class="icon-text">
+                <span class="icon">
+                  <i class="fas fa-heart has-text-danger"></i>
+                </span>
+                <span>100% Open Source</span>
+              </span>
+            </p>
+          </div>
+        </div>
+  
+        <!-- Columna: Enlaces -->
+        <div class="column is-4">
+          <div class="buttons is-centered">
+            <a href="{{ app_repository }}" 
+               class="button is-small is-dark"
+               target="_blank"
+               rel="noopener noreferrer">
+              <span class="icon">
+                <i class="fab fa-github"></i>
+              </span>
+              <span>Repositorio</span>
+            </a>
+            
+            <a href="/about" 
+               class="button is-small is-info is-light">
+              <span class="icon">
+                <i class="fas fa-info-circle"></i>
+              </span>
+              <span>Acerca de</span>
+            </a>
+          </div>
+        </div>
+  
+        <!-- Columna: Copyright -->
+        <div class="column is-4">
+          <div class="content has-text-centered has-text-right-mobile">
+            <p class="is-size-7">
+              <span class="icon-text">
+                <span class="icon">
+                  <i class="far fa-copyright"></i>
+                </span>
+                <span>2025 {{ app_name }}. MIT License</span>
+              </span>
+            </p>
+            <p class="is-size-7">
+              <span class="icon-text">
+                <span class="icon">
+                  <i class="fas fa-flask"></i>
+                </span>
+                <span>Hecho con Flask y Bulma</span>
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>

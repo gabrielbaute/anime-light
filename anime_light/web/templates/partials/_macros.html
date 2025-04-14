@@ -1,0 +1,22 @@
+{% block scripts %}
+<script>
+    // Cerrar mensajes flash después de 5 segundos
+    setTimeout(function() {
+        const notifications = document.querySelectorAll('.notification');
+        notifications.forEach(notification => {
+            notification.style.display = 'none';
+        });
+    }, 5000);
+
+    // Muestra el nombre del archivo seleccionado (específico para el form de upload)
+    const uploadFormFileInput = document.querySelector('.upload-form .file-input');
+    if (uploadFormFileInput) {  // Verifica si el elemento existe
+        uploadFormFileInput.onchange = () => {
+            if (uploadFormFileInput.files.length > 0) {
+                const fileName = document.querySelector('.upload-form .file-name');
+                fileName.textContent = uploadFormFileInput.files[0].name;
+            }
+        };
+    }
+</script>
+{% endblock %}
