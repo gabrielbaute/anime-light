@@ -1,7 +1,7 @@
 import os
 import fnmatch
 from pathlib import Path
-from rich.progress import Progress, BarColumn, TextColumn, TimeRemainingColumn
+from rich.progress import Progress, BarColumn, TextColumn, TimeElapsedColumn
 from anime_light.cli.utils import select_converter
 
 def process_single_file(input_path: str, output_dir: str, resolution: str, crf: int, preset: str, progress) -> bool:
@@ -39,7 +39,7 @@ def process_batch(input_dir: str, output_dir: str, resolution: str, crf: int, pr
         TextColumn("[bold blue]{task.description}"),
         BarColumn(),
         TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
-        TimeRemainingColumn(),
+        TimeElapsedColumn(),
         transient=True
     ) as progress:
         try:

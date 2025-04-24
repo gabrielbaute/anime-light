@@ -2,7 +2,7 @@ import sys
 import os
 from pathlib import Path
 from rich.console import Console
-from rich.progress import Progress, BarColumn, TextColumn, TimeRemainingColumn
+from rich.progress import Progress, BarColumn, TextColumn, TimeRemainingColumn, TimeElapsedColumn
 
 from anime_light.cli.parser import create_parser
 from anime_light.cli.commands import process_single_file, process_batch
@@ -44,7 +44,7 @@ def main():
             TextColumn("[bold blue]{task.description}"),
             BarColumn(),
             TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
-            TimeRemainingColumn(),
+            TimeElapsedColumn(),
             TextColumn("•"),
             TextColumn("[bold green]{task.fields[filename]}"),
         ) as progress:
