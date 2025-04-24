@@ -1,8 +1,10 @@
-# anime_light/core/utils.py
+# Funciones de utilidad variadas
 import subprocess
 from rich.console import Console
+from rich.table import Table
 
 console = Console()
+__version__ = "0.3.1"
 
 def check_ffmpeg() -> bool:
     """Verifica si FFmpeg está instalado."""
@@ -47,3 +49,23 @@ def get_available_hwaccels() -> list:
         ]
     except (subprocess.CalledProcessError, FileNotFoundError):
         return []
+
+def show_version():
+    """Muestra la versión en una tabla estilo Rich."""
+    console = Console()
+    table = Table(
+        title="[bold magenta]anime-light[/bold magenta]",
+        show_header=False,
+        border_style="blue",
+        padding=(0, 2),
+    )
+    table.add_column("Key", style="cyan", justify="right")
+    table.add_column("Value", style="green")
+    
+    table.add_row("[yellow]Build[/yellow]", "[bold]stable[/bold]")
+    table.add_row("Versión", f"[bold]{__version__}[/bold]")
+    table.add_row("Autor", "Gabriel Baute")
+    table.add_row("Licencia", "MIT")
+    table.add_row("Repo", "https://github.com/gabrielbaute/anime-light")
+
+    console.print(table)
