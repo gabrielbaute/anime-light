@@ -1,0 +1,1 @@
+from anime_light.services.video_analyzer_service import VideoAnalyzerService
