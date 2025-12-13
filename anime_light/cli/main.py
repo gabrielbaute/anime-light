@@ -1,13 +1,14 @@
 import sys
 import os
+import argparse
 from pathlib import Path
 from rich.console import Console
 from rich.progress import Progress, BarColumn, TextColumn, TimeElapsedColumn
 from rich.markdown import Markdown
 
 from anime_light.cli.parser import create_parser
-from anime_light.cli.commands import process_single_file, process_batch
-from anime_light.cli.utils import check_ffmpeg, validate_gpu_acceleration, get_available_hwaccels, show_version
+from anime_light.cli.commands import process_single_file, process_batch, show_version
+from anime_light.cli.utils import check_ffmpeg, validate_gpu_acceleration, get_available_hwaccels
 
 console = Console()
 

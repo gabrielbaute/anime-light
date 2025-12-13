@@ -1,6 +1,6 @@
 import argparse
 
-def create_parser():
+def create_parser() -> argparse.ArgumentParser:
     """Configura los argumentos de línea de comandos."""
     parser = argparse.ArgumentParser(
         prog="Anime-light",
