@@ -13,6 +13,17 @@ class ConversionProfilesService:
         )
 
     @staticmethod
+    def anime_small_size():
+        return dict(
+            crf=28,
+            preset=FfmpegPresets.SLOW,
+            scale=VideoResolution.P_480,
+            video_codec=VideoCodecs.HEVC,
+            audio_codec=AudioCodecs.AAC,
+            audio_bitrate=AudioBitrates.B_96K
+        )
+
+    @staticmethod
     def movie_high_quality():
         return dict(
             crf=20,
