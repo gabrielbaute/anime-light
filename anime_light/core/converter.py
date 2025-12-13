@@ -23,7 +23,7 @@ class VideoConverter(ABC):
         self.output_dir = output_dir
         self.temp_dir = temp_dir
         self.console = Console()
-        self.logger = logging.getLogger(f"[{self.__class__.__name__}]")
+        self.logger = logging.getLogger(self.__class__.__name__)
         
         Path(self.output_dir).mkdir(exist_ok=True)
         Path(self.temp_dir).mkdir(exist_ok=True)
@@ -72,16 +72,6 @@ class VideoConverter(ABC):
             ])
         
         return gpu_params
-
-    @abstractmethod
-    def _generate_output_filename(self) -> str:
-        """Genera el nombre del archivo de salida (ej: 'video[480p].mp4')."""
-        pass
-
-    @abstractmethod
-    def _get_ffmpeg_scale(self) -> str:
-        """Devuelve el filtro de escala de FFmpeg (ej: 'scale=640:480')."""
-        pass
 
     def convert(
         self,
@@ -173,3 +163,13 @@ class VideoConverter(ABC):
         self.output_filename = new_name
         self.temp_path = os.path.join(self.temp_dir, self.output_filename)
         self.output_path = os.path.join(self.output_dir, self.output_filename)
+
+    @abstractmethod
+    def _generate_output_filename(self) -> str:
+        """Genera el nombre del archivo de salida (ej: 'video[480p].mp4')."""
+        pass
+
+    @abstractmethod
+    def _get_ffmpeg_scale(self) -> str:
+        """Devuelve el filtro de escala de FFmpeg (ej: 'scale=640:480')."""
+        pass
