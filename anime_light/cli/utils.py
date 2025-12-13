@@ -1,10 +1,13 @@
 # Funciones de utilidad variadas
 import subprocess
+from typing import List, Optional
 from rich.console import Console
-from rich.table import Table
+
+from anime_light.core import Convert360p, Convert480p, Convert720p, Convert1080p
+from anime_light.core.converter import VideoConverter
+
 
 console = Console()
-__version__ = "0.3.1"
 
 def check_ffmpeg() -> bool:
     """Verifica si FFmpeg está instalado."""
@@ -15,9 +18,19 @@ def check_ffmpeg() -> bool:
         console.print("[red]❌ FFmpeg no está instalado o no está en el PATH.")
         return False
 
-def select_converter(resolution: str):
-    """Selecciona la clase de conversión."""
-    from anime_light.core.converter import Convert360p, Convert480p, Convert720p, Convert1080p  # Import local para evitar circularidad
+def select_converter(resolution: str) -> VideoConverter:
+    """
+    Selecciona la clase de conversión.
+    
+    Args:
+        resolution (str): Resolución deseada ("360p", "480p", "720p", "1080p").
+    
+    Returns:
+        VideoConverter: Clase de conversión seleccionada.
+    
+    Raises:
+        ValueError: Si la resolución no es válida.
+    """
     converters = {
         "360p": Convert360p,
         "480p": Convert480p,
@@ -32,7 +45,7 @@ def validate_gpu_acceleration(method: str) -> bool:
     """Versión optimizada usando get_available_hwaccels()."""
     return method.lower() in get_available_hwaccels()
 
-def get_available_hwaccels() -> list:
+def get_available_hwaccels() -> List[str]:
     """Obtiene métodos de aceleración disponibles, ignorando la primera línea (header)."""
     try:
         result = subprocess.run(
@@ -49,23 +62,3 @@ def get_available_hwaccels() -> list:
         ]
     except (subprocess.CalledProcessError, FileNotFoundError):
         return []
-
-def show_version():
-    """Muestra la versión en una tabla estilo Rich."""
-    console = Console()
-    table = Table(
-        title="[bold magenta]anime-light[/bold magenta]",
-        show_header=False,
-        border_style="blue",
-        padding=(0, 2),
-    )
-    table.add_column("Key", style="cyan", justify="right")
-    table.add_column("Value", style="green")
-    
-    table.add_row("[yellow]Build[/yellow]", "[bold]stable[/bold]")
-    table.add_row("Versión", f"[bold]{__version__}[/bold]")
-    table.add_row("Autor", "Gabriel Baute")
-    table.add_row("Licencia", "MIT")
-    table.add_row("Repo", "https://github.com/gabrielbaute/anime-light")
-
-    console.print(table)
