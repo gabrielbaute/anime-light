@@ -1,12 +1,13 @@
 import os
 import re
 import shutil
-from abc import ABC, abstractmethod
+import logging
+import subprocess
 from pathlib import Path
+from typing import Optional, List
+from abc import ABC, abstractmethod
 from rich.progress import Progress
 from rich.console import Console
-import subprocess
-from typing import Optional
 
 class VideoConverter(ABC):
     """Clase base abstracta para conversiones de video con FFmpeg."""
@@ -22,6 +23,7 @@ class VideoConverter(ABC):
         self.output_dir = output_dir
         self.temp_dir = temp_dir
         self.console = Console()
+        self.logger = logging.getLogger(f"[{self.__class__.__name__}]")
         
         Path(self.output_dir).mkdir(exist_ok=True)
         Path(self.temp_dir).mkdir(exist_ok=True)
@@ -32,8 +34,16 @@ class VideoConverter(ABC):
         self.output_path = os.path.join(self.output_dir, self.output_filename)
 
 
-    def _build_gpu_params(self, gpu_method: str) -> list:
-        """Genera parámetros específicos para cada método de GPU."""
+    def _build_gpu_params(self, gpu_method: str) -> List[str]:
+        """
+        Genera parámetros específicos para cada método de GPU.
+        
+        Args:
+            gpu_method (str): Método de GPU ("qsv", "cuda", "vaapi").
+        
+        Returns:
+            List[str]: Lista de parámetros FFmpeg para la GPU.
+        """
         gpu_params = []
         
         if gpu_method == "qsv":  # Intel
@@ -72,31 +82,6 @@ class VideoConverter(ABC):
     def _get_ffmpeg_scale(self) -> str:
         """Devuelve el filtro de escala de FFmpeg (ej: 'scale=640:480')."""
         pass
-
-    @staticmethod
-    def convert_batch(
-        input_dir: str,
-        output_dir: str,
-        resolution: str = "480p",
-        crf: int = 23,
-        preset: str = "slow"
-    ) -> None:
-        """
-        Convierte todos los videos de una carpeta.
-        
-        Args:
-            input_dir (str): Carpeta con videos de entrada.
-            output_dir (str): Carpeta de salida.
-            resolution (str): "480p" o "720p".
-            crf (int): Calidad del video.
-            preset (str): Preset de FFmpeg.
-        """
-        converter_class = Convert480p if resolution == "480p" else Convert720p
-        for filename in os.listdir(input_dir):
-            if filename.endswith((".mp4", ".mkv")):
-                input_path = os.path.join(input_dir, filename)
-                converter = converter_class(input_path, output_dir=output_dir)
-                converter.convert(crf=crf, preset=preset)
 
     def convert(
         self,
@@ -188,41 +173,3 @@ class VideoConverter(ABC):
         self.output_filename = new_name
         self.temp_path = os.path.join(self.temp_dir, self.output_filename)
         self.output_path = os.path.join(self.output_dir, self.output_filename)
-
-class Convert360p(VideoConverter):
-    """Conversor específico para resolución 360p (640x360)."""
-    
-    def _generate_output_filename(self) -> str:
-        return f"{os.path.splitext(self.input_filename)[0]}[360p].mp4"
-
-    def _get_ffmpeg_scale(self) -> str:
-        return "scale=640:360:flags=lanczos"  # Relación de aspecto 16:9
-
-
-class Convert480p(VideoConverter):
-    """Conversor específico para resolución 480p (640x480)."""
-    
-    def _generate_output_filename(self) -> str:
-        return f"{os.path.splitext(self.input_filename)[0]}[480p].mp4"
-
-    def _get_ffmpeg_scale(self) -> str:
-        return "scale=640:480:flags=lanczos"  # Relación 4:3 (común en anime antiguo)
-
-
-class Convert720p(VideoConverter):
-    """Conversor específico para resolución 720p (1280x720)."""
-    
-    def _generate_output_filename(self) -> str:
-        return f"{os.path.splitext(self.input_filename)[0]}[720p].mp4"
-
-    def _get_ffmpeg_scale(self) -> str:
-        return "scale=1280:720:flags=lanczos"  # 16:9 HD
-
-class Convert1080p(VideoConverter):
-    """Conversor específico para resolución 1080p (1920x1080)."""
-    
-    def _generate_output_filename(self) -> str:
-        return f"{os.path.splitext(self.input_filename)[0]}[1080p].mp4"
-
-    def _get_ffmpeg_scale(self) -> str:
-        return "scale=1920:1080:flags=lanczos"  # 16:9 Full HD
