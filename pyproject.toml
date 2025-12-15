@@ -15,13 +15,27 @@ readme = "README.md"
 homepage = "https://github.com/gabrielbaute/anime-light"
 repository = "https://github.com/gabrielbaute/anime-light"
 keywords = ["anime", "video", "converter", "ffmpeg"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Multimedia :: Graphics",
+    "Topic :: Multimedia :: Video",
+    "Topic :: Utilities",
+]
 
 # ------------------------------------------------
 # Configuración de paquetes y directorios
 # ------------------------------------------------
 packages = [
-    { include = "anime_light" },  # Incluye todo el directorio `anime_light`
-    # { include = "otro_modulo" },  # Si tienes otros módulos
+    { include = "animelight" }
 ]
 
 # Opcional: Incluir archivos adicionales (como datos estáticos)
@@ -34,7 +48,7 @@ include = [
 # ------------------------------------------------
 # Puntos de entrada para comandos CLI
 # ------------------------------------------------
-anime-light = "anime_light.cli.main:main"
+al = "animelight.__main__:main"
 
 [tool.poetry.dependencies]
 # ------------------------------------------------
@@ -63,24 +77,3 @@ target-version = ['py38']
 [tool.pytest.ini_options]
 python_files = "test_*.py"
 addopts = "--verbose"
-
-[tool.bumpver]
-current_version = "0.3.2"
-version_pattern = "MAJOR.MINOR.PATCH"
-commit_message = "bump version {old_version} -> {new_version}"
-tag_message = "{new_version}"
-tag_scope = "default"
-pre_commit_hook = ""
-post_commit_hook = ""
-commit = true
-tag = true
-push = true
-
-[tool.bumpver.file_patterns]
-"pyproject.toml" = [
-    'current_version = "{version}"',
-    'version = "{version}"',
-]
-"anime_light/__init__.py" = [
-    '__version__ = "{version}"',
-]
