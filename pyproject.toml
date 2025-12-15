@@ -54,10 +54,11 @@ al = "animelight.__main__:main"
 # ------------------------------------------------
 # Dependencias principales
 # ------------------------------------------------
-python = "^3.8"
-rich = "^13.0.0"
+python = "^3.12"
+rich = "^13.9.0"
 click = "^8.1.0"
-pydantic = "^2.4.2"
+psutil = "^5.9.0"
+pydantic = "^2.12.5"
 
 # ------------------------------------------------
 # Dependencias opcionales
