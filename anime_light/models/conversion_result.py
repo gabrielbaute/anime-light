@@ -5,6 +5,8 @@ from typing import Optional, List
 
 class ConversionResult(BaseModel):
     """
+    ConversionResult contains information about a video conversion event.
+
     Keywords:
         success (bool): Whether the conversion was successful.
         input_file (Path): Path to the input video file.

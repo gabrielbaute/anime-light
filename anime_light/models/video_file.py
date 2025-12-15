@@ -4,6 +4,8 @@ from typing import Optional, List
 
 class VideoFileInfo(BaseModel):
     """
+    VideoFileInfo contains information about a video file.
+
     Keywords:
         path (Path): Path to the video file.
         size_bytes (int): Size of the video file in bytes.
