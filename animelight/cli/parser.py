@@ -54,4 +54,12 @@ def create_parser() -> argparse.ArgumentParser:
     convert_parser.add_argument("--cool-mode", action="store_true", help="Forzar un único hilo")
     convert_parser.add_argument("-b", "--batch", "--recursive", action="store_true", help="Procesar subcarpetas o batch")
 
+    # -------------------------------------------
+    # Subcommand: init
+    # -------------------------------------------
+    init_parser = subparsers.add_parser("init", help="Initialize application settings")
+    init_parser.add_argument("--host", type=str, default="127.0.0.1", help="API host (default: 127.0.0.1)")
+    init_parser.add_argument("--port", type=int, default=8000, help="API port (default: 8000)")
+    init_parser.add_argument("--level", type=str, default="INFO", help="Log level (default: INFO)")
+
     return parser

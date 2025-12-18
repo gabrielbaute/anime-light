@@ -1,38 +1,45 @@
 import sys
 from pathlib import Path
+from rich.console import Console
+
 from animelight.cli.parser import create_parser
-from animelight.cli.commands import show_version, analyze_video, show_sysinfo, run_convert, CommandHelp
+from animelight.cli.commands import show_version, analyze_video, show_sysinfo, run_convert, init_settings, CommandHelp
 
 
 def main() -> None:
     parser = create_parser()
+    console = Console()
+    help = CommandHelp(console=console)
     
     if "--help" in sys.argv or "-h" in sys.argv:
-        if len(sys.argv) > 1 and sys.argv[1] in ["convert", "analyze", "sysinfo", "version", "help"]:
-            CommandHelp().print_command_help(sys.argv[1])
+        if len(sys.argv) > 1 and sys.argv[1] in ["convert", "analyze", "sysinfo", "version", "help", "init"]:
+            help.print_command_help(sys.argv[1])
         else:
-            CommandHelp().print_help()
+            help.print_help()
         sys.exit(0)
 
     args = parser.parse_args()
 
     if args.command == "version":
-        show_version()
+        show_version(console=console)
 
     elif args.command == "analyze":
-        analyze_video(Path(args.file))
+        analyze_video(Path(args.file), console=console)
 
     elif args.command == "sysinfo":
-        show_sysinfo()
+        show_sysinfo(console=console)
 
     elif args.command == "convert":
-        run_convert(args)
+        run_convert(args, console=console)
+
+    elif args.command == "init":
+        init_settings(args, console=console)
     
     elif args.command == "help":
-            CommandHelp().print_help()
+        help.print_help()
 
     elif args.command is None:
-        CommandHelp().print_help()
+        help.print_help()
         sys.exit(1)
 
 if __name__ == "__main__":
