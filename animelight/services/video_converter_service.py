@@ -8,12 +8,13 @@ from typing import Optional, List
 from rich.console import Console
 from rich.progress import Progress, BarColumn, TextColumn, TimeRemainingColumn
 
+from animelight.settings.settings import Settings
 from animelight.models.video_file import VideoFileInfo
 from animelight.models.conversion_result import ConversionResult
 from animelight.enums import VideoResolution, GPUMethods, AudioBitrates, VideoCodecs, AudioCodecs, FfmpegPresets
 
 class VideoConverterService:
-    def __init__(self, video_info: VideoFileInfo, output_dir: Path = Path("output"), temp_dir: Path = Path("temp")):
+    def __init__(self, video_info: VideoFileInfo, output_dir: Path = Settings.OUTPUT_DIR, temp_dir: Path = Settings.TEMP_DIR):
         self.video_info = video_info
         self.output_dir = output_dir
         self.temp_dir = temp_dir
