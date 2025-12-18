@@ -22,13 +22,15 @@ class CommandHelp:
         table.add_column("Description", style="green")
 
         commands = {
-            "version": "Show version information",
-            "init": "Initialize application settings",
-            "settings": "Show actual app settings",
             "help": "Show help information",
+            "init": "Initialize application settings",
+            "convert": "Convert a video file with ffmpeg",
+            "settings": "Show actual app settings",
             "analyze": "Analyze a video file and show metadata",
             "sysinfo": "Show system information and requirements",
-            "convert": "Convert a video file with ffmpeg",
+            "clean": "Clean the app directories",
+            "version": "Show version information",
+            
         }
 
         for cmd, desc in commands.items():
@@ -39,11 +41,13 @@ class CommandHelp:
         self.console.print("\n[bold yellow]Usage examples:[/bold yellow]")
         self.console.print(f"  {self.app_name} version")
         self.console.print(f"  {self.app_name} init --host 127.0.0.1 --port 8000 --level INFO")
+        self.console.print(f"  {self.app_name} convert input.mp4 -r 720 -c 23 -p slow -t 4")
+        self.console.print(f"  {self.app_name} convert input.mp4 --cool-mode --progress")
+        self.console.print(f"  {self.app_name} clean --logs --temp")
         self.console.print(f"  {self.app_name} settings")
         self.console.print(f"  {self.app_name} analyze input.mp4")
         self.console.print(f"  {self.app_name} sysinfo")
-        self.console.print(f"  {self.app_name} convert input.mp4 -r 720 -c 23 -p slow -t 4")
-        self.console.print(f"  {self.app_name} convert input.mp4 --cool-mode --progress")
+
 
     def print_command_help(self, command: str) -> None:
         """
@@ -87,6 +91,14 @@ class CommandHelp:
                 "--host": "API host (default: 127.0.0.1)",
                 "--port": "API port (default: 8000)",
                 "--level": "Log level (default: INFO)",
+            }
+        elif command == "clean":
+            options = {
+                "--all": "Clean all directories",
+                "--temp": "Clean temp directory",
+                "--output": "Clean output directory",
+                "--logs": "Clean logs directory",
+                "--settings": "Remove the .env file with the app settings",
             }
         elif command == "settings":
             options = {}

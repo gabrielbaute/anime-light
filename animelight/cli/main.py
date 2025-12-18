@@ -3,7 +3,15 @@ from pathlib import Path
 from rich.console import Console
 
 from animelight.cli.parser import create_parser
-from animelight.cli.commands import show_version, analyze_video, show_sysinfo, run_convert, init_settings, show_settings, CommandHelp
+from animelight.cli.commands import (
+    show_version, 
+    analyze_video, 
+    show_sysinfo, 
+    run_convert, 
+    init_settings, 
+    show_settings,
+    clean_directories, 
+    CommandHelp)
 
 
 def main() -> None:
@@ -12,7 +20,7 @@ def main() -> None:
     help = CommandHelp(console=console)
     
     if "--help" in sys.argv or "-h" in sys.argv:
-        if len(sys.argv) > 1 and sys.argv[1] in ["convert", "analyze", "sysinfo", "version", "help", "init", "settings"]:
+        if len(sys.argv) > 1 and sys.argv[1] in ["convert", "analyze", "sysinfo", "version", "help", "init", "settings", "clean"]:
             help.print_command_help(sys.argv[1])
         else:
             help.print_help()
@@ -38,6 +46,9 @@ def main() -> None:
     elif args.command == "settings":
         show_settings(console=console)
     
+    elif args.command == "clean":
+        clean_directories(args, console=console)
+
     elif args.command == "help":
         help.print_help()
 
