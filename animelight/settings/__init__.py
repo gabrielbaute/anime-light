@@ -1,1 +1,2 @@
 from animelight.settings.settings import Settings
+from animelight.settings.log_settings import AnimeLightLogger
