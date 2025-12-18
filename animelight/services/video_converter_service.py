@@ -244,7 +244,7 @@ class VideoConverterService:
             process.wait()
 
         success = process.returncode == 0
-        output_file = self.output_dir / f"{self.video_info.path.stem}_converted.mp4"
+        output_file = self.output_dir / f"{self.video_info.path.stem}_{scale.to_height()}p.mp4"
 
         if success and temp_file.exists():
             shutil.move(temp_file, output_file)

@@ -10,3 +10,15 @@ class VideoResolution(StrEnum):
 
     def __str__(self):
         return self.value
+       
+    def to_height(self) -> int:
+        """
+        Returns the height of the resolution.
+        """
+        return int(self.value.split(":")[1])
+    
+    def to_width(self)-> int:
+        """
+        Returns the width of the resolution.
+        """
+        return int(self.value.split(":")[0])
