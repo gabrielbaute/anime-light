@@ -1,10 +1,13 @@
+"""
+Help command for the CLI.
+"""
 from rich.console import Console
 from rich.table import Table
 
 class CommandHelp:
-    def __init__(self, app_name: str = "anime-light"):
+    def __init__(self, console: Console, app_name: str = "al"):
         self.app_name = app_name
-        self.console = Console()
+        self.console = console
     
     def print_help(self) -> None:
         """
@@ -20,6 +23,7 @@ class CommandHelp:
 
         commands = {
             "version": "Show version information",
+            "init": "Initialize application settings",
             "help": "Show help information",
             "analyze": "Analyze a video file and show metadata",
             "sysinfo": "Show system information and requirements",
@@ -33,6 +37,7 @@ class CommandHelp:
 
         self.console.print("\n[bold yellow]Usage examples:[/bold yellow]")
         self.console.print(f"  {self.app_name} version")
+        self.console.print(f"  {self.app_name} init --host 127.0.0.1 --port 8000 --level INFO")
         self.console.print(f"  {self.app_name} analyze input.mp4")
         self.console.print(f"  {self.app_name} sysinfo")
         self.console.print(f"  {self.app_name} convert input.mp4 -r 720 -c 23 -p slow -t 4")
@@ -49,7 +54,7 @@ class CommandHelp:
             None
         """
         table = Table(
-            title=f"[bold magenta]Help for '{command}'[/bold magenta]",
+            title=f"[bold magenta]Help for '{command}' command[/bold magenta]",
             border_style="blue",
             padding=(0, 2),
         )
@@ -74,6 +79,12 @@ class CommandHelp:
                 "--cool-mode": "Force single-thread mode",
                 "-b / --batch / --recursive": "Process subfolders or batch mode",
                 "--progress": "Show progress bar during conversion",
+            }
+        elif command == "init":
+            options = {
+                "--host": "API host (default: 127.0.0.1)",
+                "--port": "API port (default: 8000)",
+                "--level": "Log level (default: INFO)",
             }
         elif command == "version":
             options = {}

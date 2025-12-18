@@ -1,11 +1,12 @@
+"""
+Version command for the CLI.
+"""
 from rich.console import Console
 from rich.table import Table
 
-console = Console()
-
 __version__ = "0.4.0"
 
-def show_version() -> None:
+def show_version(console: Console) -> None:
     """
     Shows the CLI version
     """

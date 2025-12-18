@@ -1,11 +1,15 @@
+"""
+Analyze command for video files.
+"""
 from pathlib import Path
 from rich.console import Console
 from rich.table import Table
+
 from animelight.services import VideoAnalyzerService
+from animelight.cli.utils import convert_bytes_to_mb
 
-console = Console()
 
-def analyze_video(file: Path) -> None:
+def analyze_video(file: Path, console: Console) -> None:
     """
     Analyze a video file and display its metadata.
 
@@ -21,13 +25,14 @@ def analyze_video(file: Path) -> None:
     if not info:
         console.print(f"[red]Error:[/red] The file could not be analyzed {file}")
         return
+    size = convert_bytes_to_mb(info.size_bytes)
 
     table = Table(title=f"[bold magenta]Video Analysis[/bold magenta]: {file.name}", border_style="blue")
     table.add_column("Atributo", style="cyan", justify="right")
     table.add_column("Valor", style="green")
 
     table.add_row("Path", str(info.path))
-    table.add_row("Size (bytes)", str(info.size_bytes))
+    table.add_row("Size", str(f"{size:.2f} MB"))
     table.add_row("Formats", ", ".join(info.formats))
     table.add_row("Format long name", str(info.format_long_name or "-"))
     table.add_row("Duration (s)", f"{info.duration_seconds:.2f}")

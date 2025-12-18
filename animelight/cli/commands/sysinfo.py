@@ -1,10 +1,11 @@
+"""
+System information command.
+"""
 from rich.console import Console
 from rich.table import Table
 from animelight.services import SystemInspectorService
 
-console = Console()
-
-def show_sysinfo() -> None:
+def show_sysinfo(console: Console) -> None:
     """
     Displays system information and requirements.
 

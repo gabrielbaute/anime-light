@@ -1,3 +1,6 @@
+"""
+Convert command for video files.
+"""
 from pathlib import Path
 from rich.console import Console
 from rich.table import Table
@@ -15,9 +18,7 @@ from animelight.models import ConversionResult
 from animelight.services.video_analyzer_service import VideoAnalyzerService
 from animelight.services.video_converter_service import VideoConverterService
 
-console = Console()
-
-def run_convert(args: Namespace) -> None:
+def run_convert(args: Namespace, console: Console) -> None:
     """
     Ejecuta la conversión de video usando los parámetros de argparse.
     """
