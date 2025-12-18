@@ -54,8 +54,6 @@ def run_convert(args: Namespace, console: Console) -> None:
     # Determinar directorio de salida
     if args.output:
         output_dir = Path(args.output).parent
-    else:
-        output_dir = Path("output")
 
     # Crear servicio de conversión
     service = VideoConverterService(video_info, output_dir=output_dir)

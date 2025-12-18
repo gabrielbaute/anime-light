@@ -6,3 +6,16 @@ from animelight.cli.commands.sysinfo import show_sysinfo
 from animelight.cli.commands.convert import run_convert
 from animelight.cli.commands.clean import clean_directories
 from animelight.cli.commands.help import CommandHelp
+
+commands = ["convert", "analyze", "sysinfo", "version", "help", "init", "settings", "clean"]
+
+__all__ = [
+    "show_version",
+    "init_settings",
+    "show_settings",
+    "analyze_video",
+    "show_sysinfo",
+    "run_convert",
+    "clean_directories",
+    "CommandHelp",
+]
