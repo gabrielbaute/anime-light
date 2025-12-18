@@ -8,6 +8,7 @@ class ConversionResult(BaseModel):
     ConversionResult contains information about a video conversion event.
 
     Keywords:
+        id (str): Unique identifier for the conversion event.
         success (bool): Whether the conversion was successful.
         input_file (Path): Path to the input video file.
         output_file (Optional[Path]): Path to the output video file.
@@ -16,6 +17,7 @@ class ConversionResult(BaseModel):
         duration_seconds (Optional[float]): Duration of the video in seconds.
         error_message (Optional[str]): Error message if the conversion failed.
     """
+    id: str
     success: bool
     input_file: Path
     output_file: Optional[Path] = None
