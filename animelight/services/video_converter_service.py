@@ -219,46 +219,59 @@ class VideoConverterService:
             audio_bitrate, video_codec, audio_codec, threads
         )
         self.logger.debug(f"Running ffmpeg command with progress: {' '.join(cmd)}")
+        
+        try:
+            duration = self.video_info.duration_seconds
+            process = subprocess.Popen(cmd, stderr=subprocess.PIPE, text=True)
 
-        duration = self.video_info.duration_seconds
-        process = subprocess.Popen(cmd, stderr=subprocess.PIPE, text=True)
+            time_pattern = re.compile(r"time=(\d+):(\d+):(\d+\.\d+)")
 
-        time_pattern = re.compile(r"time=(\d+):(\d+):(\d+\.\d+)")
+            with Progress(
+                TextColumn("[progress.description]{task.description}"),
+                BarColumn(),
+                TextColumn("{task.percentage:>3.0f}%"),
+                TimeRemainingColumn(),
+                console=console,
+            ) as progress:
+                task = progress.add_task("Converting...", total=duration)
 
-        with Progress(
-            TextColumn("[progress.description]{task.description}"),
-            BarColumn(),
-            TextColumn("{task.percentage:>3.0f}%"),
-            TimeRemainingColumn(),
-            console=console,
-        ) as progress:
-            task = progress.add_task("Converting...", total=duration)
+                for line in process.stderr:
+                    match = time_pattern.search(line)
+                    if match:
+                        h, m, s = match.groups()
+                        current_time = int(h) * 3600 + int(m) * 60 + float(s)
+                        progress.update(task, completed=current_time)
 
-            for line in process.stderr:
-                match = time_pattern.search(line)
-                if match:
-                    h, m, s = match.groups()
-                    current_time = int(h) * 3600 + int(m) * 60 + float(s)
-                    progress.update(task, completed=current_time)
+                process.wait()
 
-            process.wait()
+            success = process.returncode == 0
+            output_file = self.output_dir / f"{self.video_info.path.stem}_{scale.to_height()}p.mp4"
 
-        success = process.returncode == 0
-        output_file = self.output_dir / f"{self.video_info.path.stem}_{scale.to_height()}p.mp4"
+            if success and temp_file.exists():
+                shutil.move(temp_file, output_file)
+            if temp_file.exists():
+                temp_file.unlink()
 
-        if success and temp_file.exists():
-            shutil.move(temp_file, output_file)
-        if temp_file.exists():
-            temp_file.unlink()
-
-        result = ConversionResult(
-            id=self.create_id(),
-            success=success,
-            input_file=self.video_info.path,
-            output_file=output_file if success else None,
-            command=cmd,
-            log=None,
-            duration_seconds=duration,
-            error_message=None if success else "Conversion failed",
-        )
-        return result
+            result = ConversionResult(
+                id=self.create_id(),
+                success=success,
+                input_file=self.video_info.path,
+                output_file=output_file if success else None,
+                command=cmd,
+                log=None,
+                duration_seconds=duration,
+                error_message=None if success else "Conversion failed",
+            )
+            return result
+        except Exception as e:
+            self.logger.error(f"Conversion failed: {e}")
+            return ConversionResult(
+                id=self.create_id(),
+                success=False,
+                input_file=self.video_info,
+                output_file=None,
+                command=cmd,
+                log=result.stderr if result else None,
+                duration_seconds=self.video_info.duration_seconds,
+                error_message=str(e)
+            )
