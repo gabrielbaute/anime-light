@@ -24,6 +24,7 @@ class CommandHelp:
         commands = {
             "version": "Show version information",
             "init": "Initialize application settings",
+            "settings": "Show actual app settings",
             "help": "Show help information",
             "analyze": "Analyze a video file and show metadata",
             "sysinfo": "Show system information and requirements",
@@ -38,6 +39,7 @@ class CommandHelp:
         self.console.print("\n[bold yellow]Usage examples:[/bold yellow]")
         self.console.print(f"  {self.app_name} version")
         self.console.print(f"  {self.app_name} init --host 127.0.0.1 --port 8000 --level INFO")
+        self.console.print(f"  {self.app_name} settings")
         self.console.print(f"  {self.app_name} analyze input.mp4")
         self.console.print(f"  {self.app_name} sysinfo")
         self.console.print(f"  {self.app_name} convert input.mp4 -r 720 -c 23 -p slow -t 4")
@@ -86,6 +88,8 @@ class CommandHelp:
                 "--port": "API port (default: 8000)",
                 "--level": "Log level (default: INFO)",
             }
+        elif command == "settings":
+            options = {}
         elif command == "version":
             options = {}
         elif command == "help":

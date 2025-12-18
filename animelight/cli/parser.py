@@ -41,6 +41,11 @@ def create_parser() -> argparse.ArgumentParser:
     subparsers.add_parser("sysinfo", help="Shows system information and requirements")
 
     # -------------------------------------------
+    # Subcommand: settings
+    # -------------------------------------------
+    subparsers.add_parser("settings", help="Shows actual Anime Light settings")
+
+    # -------------------------------------------
     # Subcommand: convert
     # -------------------------------------------
     convert_parser = subparsers.add_parser("convert", help="Convert a video file")
