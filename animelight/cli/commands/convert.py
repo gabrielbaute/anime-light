@@ -73,9 +73,10 @@ def run_convert(args: Namespace) -> None:
 
     # Mostrar resultado con rich
     table = Table(title="[bold magenta]Conversion Result[/bold magenta]", border_style="blue")
-    table.add_column("Atributo", style="cyan", justify="right")
-    table.add_column("Valor", style="green")
+    table.add_column("Attribute", style="cyan", justify="right")
+    table.add_column("Value", style="green")
 
+    table.add_row("ID", result.id)
     table.add_row("Success", str(result.success))
     table.add_row("Input", str(result.input_file))
     table.add_row("Output", str(result.output_file or "-"))

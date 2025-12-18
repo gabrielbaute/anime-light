@@ -2,6 +2,7 @@ import re
 import subprocess
 import shutil
 import logging
+import uuid
 from pathlib import Path
 from typing import Optional, List
 from rich.console import Console
@@ -20,6 +21,15 @@ class VideoConverterService:
 
         self.output_dir.mkdir(exist_ok=True)
         self.temp_dir.mkdir(exist_ok=True)
+
+    def create_id(self) -> str:
+        """
+        Creates an uuid id for the conversion.
+
+        Returns:
+            str: The uuid id.
+        """
+        return str(uuid.uuid4())
 
     def _build_gpu_params(self, gpu_method: GPUMethods, crf: int, video_codec: VideoCodecs) -> List[str]:
         """
@@ -179,6 +189,7 @@ class VideoConverterService:
         except Exception as e:
             self.logger.error(f"Conversion failed: {e}")
             return ConversionResult(
+                id=self.create_id(),
                 success=False,
                 input_file=self.video_info.path,
                 output_file=None,
@@ -241,6 +252,7 @@ class VideoConverterService:
             temp_file.unlink()
 
         result = ConversionResult(
+            id=self.create_id(),
             success=success,
             input_file=self.video_info.path,
             output_file=output_file if success else None,
