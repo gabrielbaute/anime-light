@@ -30,5 +30,5 @@ class Settings:
     # API settings
     API_HOST = os.getenv("API_HOST", "0.0.0.0")
     API_PORT = int(os.getenv("API_PORT", 8000))
-    LOG_LEVEL = os.getenv("LOG_LEVEL", "info").lower()
+    LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
     API_ALLOWED_ORIGINS: List[str] = ["*"]

@@ -35,10 +35,8 @@ class AnimeLightLogger:
         Configures the logger.
         """
         logging.basicConfig(
-            filename=self.log_file,
             level=self.log_level,
             format=self.log_format,
             handlers=self.logger_handlers(),
-            filemode="w",
         )
 
