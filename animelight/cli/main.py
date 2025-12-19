@@ -2,7 +2,7 @@ import sys
 from pathlib import Path
 from rich.console import Console
 
-from animelight.settings.log_settings import AnimeLightLogger
+from animelight.settings import AnimeLightLogger, Settings
 from animelight.cli.parser import create_parser
 from animelight.cli.commands import (
     show_version, 
@@ -18,8 +18,7 @@ from animelight.cli.commands import (
 
 
 def main() -> None:
-    settings_logger = AnimeLightLogger()
-    settings_logger.setup()
+    settings = Settings()
     parser = create_parser()
     console = Console()
     help = CommandHelp(console=console)
@@ -43,16 +42,16 @@ def main() -> None:
         show_sysinfo(console=console)
 
     elif args.command == "convert":
-        run_convert(args, console=console)
+        run_convert(args, console=console, settings=settings)
 
     elif args.command == "init":
         init_settings(args, console=console)
     
     elif args.command == "settings":
-        show_settings(console=console)
+        show_settings(console=console, settings=settings)
     
     elif args.command == "clean":
-        clean_directories(args, console=console)
+        clean_directories(args, console=console, settings=settings)
 
     elif args.command == "help":
         help.print_help()
