@@ -66,6 +66,7 @@ def create_parser() -> argparse.ArgumentParser:
     init_parser.add_argument("--host", type=str, default="127.0.0.1", help="API host (default: 127.0.0.1)")
     init_parser.add_argument("--port", type=int, default=8000, help="API port (default: 8000)")
     init_parser.add_argument("--level", type=str, default="INFO", help="Log level (default: INFO)")
+    init_parser.add_argument("--env", action="store_true", help="Optional: write .env if requested")
 
     # -------------------------------------------
     # Subcomando: clean
@@ -75,6 +76,7 @@ def create_parser() -> argparse.ArgumentParser:
     clean_parser.add_argument("--temp", action="store_true", help="Clean temp directory")
     clean_parser.add_argument("--output", action="store_true", help="Clean output directory")
     clean_parser.add_argument("--logs", action="store_true", help="Clean logs directory")
-    clean_parser.add_argument("--settings", action="store_true", help="Remove the .env file with the app settings")
+    clean_parser.add_argument("--uploads", action="store_true", help="Clean uploads directory")
+    clean_parser.add_argument("--settings", action="store_true", help="Remove the .env and .yaml files with the app settings")
 
     return parser
