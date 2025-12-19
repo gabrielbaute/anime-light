@@ -15,10 +15,10 @@ from animelight.enums import (
     AudioCodecs,
 )
 from animelight.models import ConversionResult
-from animelight.services.video_analyzer_service import VideoAnalyzerService
-from animelight.services.video_converter_service import VideoConverterService
+from animelight.settings import Settings
+from animelight.services import VideoAnalyzerService, VideoConverterService
 
-def run_convert(args: Namespace, console: Console) -> None:
+def run_convert(args: Namespace, console: Console, settings: Settings) -> None:
     """
     Ejecuta la conversión de video usando los parámetros de argparse.
     """
@@ -52,11 +52,10 @@ def run_convert(args: Namespace, console: Console) -> None:
         return
 
     # Determinar directorio de salida
-    if args.output:
-        output_dir = Path(args.output).parent
+    output_dir = Path(args.output).parent if args.output else settings.app_settings.output_dir
 
     # Crear servicio de conversión
-    service = VideoConverterService(video_info, output_dir=output_dir)
+    service = VideoConverterService(video_info, output_dir=output_dir, settings=settings)
 
     result: ConversionResult = service.convert_with_progress_bar(
         crf=args.crf or 23,
