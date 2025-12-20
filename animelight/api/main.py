@@ -3,22 +3,21 @@ import uvicorn
 from animelight.settings import Settings
 from animelight.api.app import create_app
 
-app = create_app()
+settings = Settings()
 
-def run_server(settings: Settings):
+app = create_app(settings=settings)
+
+def run_server():
     """
     Run the FastAPI server.
     """
     uvicorn.run(
         "animelight.api.main:app",
-        host=settings.API_HOST,
-        port=settings.API_PORT,
-        log_level=settings.LOG_LEVEL.lower(),
+        host=settings.app_settings.api_host,
+        port=settings.app_settings.api_port,
+        log_level=settings.app_settings.api_log_level,
         reload=True,
     )
 
 if __name__ == "__main__":
-    settings = Settings()
-    settings.load_settings()
-    print(settings.API_PORT)
-    run_server(settings)
+    run_server()
