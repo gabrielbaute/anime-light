@@ -32,19 +32,16 @@ def run_convert(args: Namespace, console: Console, settings: Settings, logger: L
     Returns:
         None
     """
-    # Mapear resolución (int -> Enum)
     resolution_map = {
         360: VideoResolution.P_360,
         480: VideoResolution.P_480,
         720: VideoResolution.P_720,
         1080: VideoResolution.P_1080,
     }
+    
     scale = resolution_map.get(args.resolution, VideoResolution.P_720)
-
-    # Mapear preset
     preset = FfmpegPresets(args.preset) if args.preset else FfmpegPresets.MEDIUM
-
-    # GPU
+    
     gpu_method = None
     if args.use_gpu:
         # TODO: lógica más avanzada con sysinfo
@@ -52,43 +49,45 @@ def run_convert(args: Namespace, console: Console, settings: Settings, logger: L
 
     # Threads
     threads = 1 if args.cool_mode else (args.threads or 1)
+    try:
+        logger.info("Starting Analysis")
+        input_path = Path(args.input)
+        analyzer = VideoAnalyzerService(input_path, logger=logger)
+        video_info = analyzer.analyze()
+        if not video_info:
+            logger.error(f"Failed at analyzing file: {input_path}")
+            console.print(f"[red]Error:[/red] Failed at analyzing file: {input_path}")
+            return
 
-    logger.info("Starting Analysis")
-    input_path = Path(args.input)
-    analyzer = VideoAnalyzerService(input_path, logger=logger)
-    video_info = analyzer.analyze()
-    if not video_info:
-        logger.error(f"Failed at analyzing file: {input_path}")
-        console.print(f"[red]Error:[/red] Failed at analyzing file: {input_path}")
-        return
+        output_dir = Path(args.output).parent if args.output else settings.app_settings.output_dir
+        service = VideoConverterService(video_info, output_dir=output_dir, settings=settings, logger=logger)
 
-    output_dir = Path(args.output).parent if args.output else settings.app_settings.output_dir
-    service = VideoConverterService(video_info, output_dir=output_dir, settings=settings, logger=logger)
+        logger.info("Starting Conversion")
+        result: ConversionResult = service.convert_with_progress_bar(
+            crf=args.crf or 23,
+            preset=preset,
+            scale=scale,
+            console=console,
+            gpu_method=gpu_method,
+            audio_bitrate=AudioBitrates.B_128K,
+            video_codec=VideoCodecs.H264,
+            audio_codec=AudioCodecs.AAC,
+            threads=threads,
+        )
 
-    logger.info("Starting Conversion")
-    result: ConversionResult = service.convert_with_progress_bar(
-        crf=args.crf or 23,
-        preset=preset,
-        scale=scale,
-        console=console,
-        gpu_method=gpu_method,
-        audio_bitrate=AudioBitrates.B_128K,
-        video_codec=VideoCodecs.H264,
-        audio_codec=AudioCodecs.AAC,
-        threads=threads,
-    )
+        table = Table(title="[bold magenta]Conversion Result[/bold magenta]", border_style="blue")
+        table.add_column("Attribute", style="cyan", justify="right")
+        table.add_column("Value", style="green")
 
-    # Mostrar resultado con rich
-    table = Table(title="[bold magenta]Conversion Result[/bold magenta]", border_style="blue")
-    table.add_column("Attribute", style="cyan", justify="right")
-    table.add_column("Value", style="green")
+        table.add_row("ID", result.id)
+        table.add_row("Success", str(result.success))
+        table.add_row("Input", str(result.input_file))
+        table.add_row("Output", str(result.output_file or "-"))
+        table.add_row("Command", " ".join(result.command))
+        table.add_row("Duration (s)", str(result.duration_seconds or "-"))
+        table.add_row("Error", str(result.error_message or "-"))
 
-    table.add_row("ID", result.id)
-    table.add_row("Success", str(result.success))
-    table.add_row("Input", str(result.input_file))
-    table.add_row("Output", str(result.output_file or "-"))
-    table.add_row("Command", " ".join(result.command))
-    table.add_row("Duration (s)", str(result.duration_seconds or "-"))
-    table.add_row("Error", str(result.error_message or "-"))
-
-    console.print(table)
+        console.print(table)
+    except KeyboardInterrupt: 
+        logger.warning("Conversion cancelled by user (Ctrl+C)") 
+        console.print("[yellow]Conversion cancelled by user.[/yellow]")
