@@ -167,6 +167,8 @@ class VideoConverterService:
             ConversionResult: The conversion result.
         """
         cmd, temp_file = self._ffmpeg_command(crf, preset, scale, gpu_method, audio_bitrate, video_codec, audio_codec, threads)
+        id_process = self.create_id()
+        self.logger.info(f"Starting conversion with id {id_process}")
         self.logger.debug(f"Running ffmpeg command: {' '.join(cmd)}")
 
         try:
@@ -183,11 +185,12 @@ class VideoConverterService:
                 temp_file.unlink()
 
             result = ConversionResult(
+                id=id_process,
                 success=success,
                 input_file=self.video_info.path,
                 output_file=output_file if success else None,
                 command=cmd,
-                log=result.stderr,
+                log=None,
                 duration_seconds=self.video_info.duration_seconds,
                 error_message=None if success else "Conversion failed"
             )
@@ -196,12 +199,12 @@ class VideoConverterService:
         except Exception as e:
             self.logger.error(f"Conversion failed: {e}")
             return ConversionResult(
-                id=self.create_id(),
+                id=id_process,
                 success=False,
                 input_file=self.video_info.path,
                 output_file=None,
                 command=cmd,
-                log=None,
+                log=result.stderr if result else None,
                 duration_seconds=self.video_info.duration_seconds,
                 error_message=str(e)
             )
@@ -225,6 +228,8 @@ class VideoConverterService:
             crf, preset, scale, gpu_method,
             audio_bitrate, video_codec, audio_codec, threads
         )
+        id_process = self.create_id()
+        self.logger.info(f"Starting conversion with id {id_process}")
         self.logger.debug(f"Running ffmpeg command with progress: {' '.join(cmd)}")
         
         try:
@@ -262,7 +267,7 @@ class VideoConverterService:
                 temp_file.unlink()
 
             result = ConversionResult(
-                id=self.create_id(),
+                id=id_process,
                 success=success,
                 input_file=self.video_info.path,
                 output_file=output_file if success else None,
@@ -276,7 +281,7 @@ class VideoConverterService:
         except Exception as e:
             self.logger.error(f"Conversion failed: {e}")
             return ConversionResult(
-                id=self.create_id(),
+                id=id_process,
                 success=False,
                 input_file=self.video_info,
                 output_file=None,
