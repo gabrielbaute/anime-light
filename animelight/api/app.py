@@ -10,10 +10,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from animelight.settings import Settings
 from animelight.api.include_routers import include_routers
 
-settings = Settings()
 __version__ = "0.4.0"
 
-def create_app() -> FastAPI:
+def create_app(settings: Settings) -> FastAPI:
     """
     Create and configure the FastAPI application.
 
@@ -31,10 +30,10 @@ def create_app() -> FastAPI:
 
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=Settings.API_ALLOWED_ORIGINS,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
+        allow_origins=settings.app_settings.allowed_origins,
+        allow_credentials=settings.app_settings.allow_credentials,
+        allow_methods=settings.app_settings.allow_methods,
+        allow_headers=settings.app_settings.allow_headers,
     )
 
     include_routers(app, prefix="/api/v1")
