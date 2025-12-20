@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from animelight.api.routes import health_router, sys_info_router
+from animelight.api.routes import health_router, sys_info_router, convert_router, clean_router
 
 def include_routers(app: FastAPI, prefix: str) -> None:
     """
@@ -14,3 +14,5 @@ def include_routers(app: FastAPI, prefix: str) -> None:
     """
     app.include_router(health_router, prefix=prefix, tags=["Health"])
     app.include_router(sys_info_router, prefix=prefix, tags=["System Info"])
+    app.include_router(convert_router, prefix=prefix, tags=["Conversion"])
+    app.include_router(clean_router, prefix=prefix, tags=["Maintenance"])

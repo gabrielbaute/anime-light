@@ -1,11 +1,15 @@
 import uvicorn
 
-from animelight.settings import Settings
+from animelight.settings import Settings, AnimeLightLogger
 from animelight.api.app import create_app
 
 settings = Settings()
 
+logger_factory = AnimeLightLogger(settings=settings)
+logger = logger_factory.get_logger()
+
 app = create_app(settings=settings)
+app.state.logger = logger
 
 def run_server():
     """
