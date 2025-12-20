@@ -4,11 +4,12 @@ from typing import Literal
 from fastapi import APIRouter, HTTPException, Request, Query
 
 from animelight.settings import Settings
+from animelight.models import CleanResponse
 
 router = APIRouter(prefix="/clean", tags=["Maintenance"])
 settings = Settings()
 
-@router.delete("", summary="Clean specific directories")
+@router.delete("", summary="Clean specific directories", response_model=CleanResponse)
 async def clean_directories(
     request: Request,
     target: Literal["uploads", "temp", "output", "all"] = Query("all", description="Directory to clean")
@@ -45,12 +46,20 @@ async def clean_directories(
         if logger:
             logger.info(f"Cleaned {target} directories: {cleaned}")
 
-        return {
-            "success": True,
-            "message": f"{target.capitalize()} directories cleaned successfully",
-            "files_removed": cleaned,
-        }
+        # Construir respuesta
+        return CleanResponse(
+            success=True,
+            message=f"{target.capitalize()} directories cleaned successfully",
+            files_removed=cleaned,
+        )
+    
     except Exception as e:
         if logger:
             logger.error(f"Error cleaning directories: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        return CleanResponse(
+            success=False,
+            message=f"Error cleaning {target.capitalize()} directories",
+            files_removed=[],
+            error_message=str(e),
+        )
+
