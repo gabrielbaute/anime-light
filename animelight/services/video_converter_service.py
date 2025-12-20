@@ -1,9 +1,9 @@
 import re
 import subprocess
 import shutil
-import logging
 import uuid
 from pathlib import Path
+from logging import Logger
 from typing import Optional, List
 from rich.console import Console
 from rich.progress import Progress, BarColumn, TextColumn, TimeRemainingColumn
@@ -18,12 +18,13 @@ class VideoConverterService:
             video_info: VideoFileInfo, 
             output_dir: Path, 
             settings: Settings,
+            logger: Logger = None
         ):
         self.video_info = video_info
         self.output_dir = output_dir
         self.settings = settings.app_settings
         self.temp_dir = self.settings.temp_dir
-        self.logger = logging.getLogger(self.__class__.__name__)
+        self.logger = logger
 
         self.output_dir.mkdir(exist_ok=True)
         self.temp_dir.mkdir(exist_ok=True)
@@ -51,7 +52,7 @@ class VideoConverterService:
         """
         gpu_params = []
         if gpu_method == GPUMethods.INTEL:
-            self.logger.debug("Using Intel GPU")
+            self.logger.info("Using Intel GPU")
             gpu_params.extend([
                 "-hwaccel", "qsv",
                 "-hwaccel_output_format", "qsv",
@@ -60,7 +61,7 @@ class VideoConverterService:
                 "-preset", "fast"
             ])
         elif gpu_method == GPUMethods.NVIDIA:
-            self.logger.debug("Using NVIDIA GPU")
+            self.logger.info("Using NVIDIA GPU")
             gpu_params.extend([
                 "-hwaccel", "cuda",
                 "-hwaccel_output_format", "cuda",
@@ -69,7 +70,7 @@ class VideoConverterService:
                 "-preset", "p4"
             ])
         elif gpu_method == GPUMethods.LINUX_AMD:
-            self.logger.debug("Using Linux AMD GPU")
+            self.logger.info("Using Linux AMD GPU")
             gpu_params.extend([
                 "-hwaccel", "vaapi",
                 "-hwaccel_output_format", "vaapi",
@@ -106,7 +107,7 @@ class VideoConverterService:
         Returns:
             List[str]: The list of ffmpeg command
         """
-        self.logger.debug(f"Building ffmpeg command for {self.video_info.path}")
+        self.logger.info(f"Building ffmpeg command for {self.video_info.path}")
         temp_file = self.temp_dir / f"{self.video_info.path.stem}_temp.mp4"
         cmd = ["ffmpeg", "-i", str(self.video_info.path)]
 
@@ -174,11 +175,11 @@ class VideoConverterService:
             output_file = self.output_dir / f"{self.video_info.path.stem}_converted.mp4"
 
             if success and temp_file.exists():
-                self.logger.debug(f"Moving temp file to {output_file}")
+                self.logger.info(f"Moving temp file to {output_file}")
                 shutil.move(temp_file, output_file)
 
             if temp_file.exists():
-                self.logger.debug(f"Deleting temp file {temp_file}")
+                self.logger.info(f"Deleting temp file {temp_file}")
                 temp_file.unlink()
 
             result = ConversionResult(
@@ -254,8 +255,10 @@ class VideoConverterService:
             output_file = self.output_dir / f"{self.video_info.path.stem}_{scale.to_height()}p.mp4"
 
             if success and temp_file.exists():
+                self.logger.info(f"Moving temp file to {output_file}")
                 shutil.move(temp_file, output_file)
             if temp_file.exists():
+                self.logger.info(f"Deleting temp file {temp_file}")
                 temp_file.unlink()
 
             result = ConversionResult(
@@ -268,6 +271,7 @@ class VideoConverterService:
                 duration_seconds=duration,
                 error_message=None if success else "Conversion failed",
             )
+            self.logger.info(f"Conversion done: {result.model_dump_json(indent=4, exclude_none=True)}")
             return result
         except Exception as e:
             self.logger.error(f"Conversion failed: {e}")

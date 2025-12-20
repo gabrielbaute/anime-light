@@ -2,6 +2,7 @@
 Analyze command for video files.
 """
 from pathlib import Path
+from logging import Logger
 from rich.console import Console
 from rich.table import Table
 
@@ -9,20 +10,23 @@ from animelight.services import VideoAnalyzerService
 from animelight.cli.utils import convert_bytes_to_mb
 
 
-def analyze_video(file: Path, console: Console) -> None:
+def analyze_video(file: Path, console: Console, logger: Logger = None) -> None:
     """
     Analyze a video file and display its metadata.
 
     Args:
         file (Path): Path to the video file.
+        console (Console): Console object from rich.
+        logger (Logger): Logger object.
 
     Returns:
         None
     """
-    service = VideoAnalyzerService(file)
+    service = VideoAnalyzerService(file=file, logger=logger)
     info = service.analyze()
 
     if not info:
+        logger.error(f"The file could not be analyzed {file}")
         console.print(f"[red]Error:[/red] The file could not be analyzed {file}")
         return
     size = convert_bytes_to_mb(info.size_bytes)

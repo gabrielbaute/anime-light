@@ -2,6 +2,7 @@
 Convert command for video files.
 """
 from pathlib import Path
+from logging import Logger
 from rich.console import Console
 from rich.table import Table
 from argparse import Namespace
@@ -18,9 +19,18 @@ from animelight.models import ConversionResult
 from animelight.settings import Settings
 from animelight.services import VideoAnalyzerService, VideoConverterService
 
-def run_convert(args: Namespace, console: Console, settings: Settings) -> None:
+def run_convert(args: Namespace, console: Console, settings: Settings, logger: Logger = None) -> None:
     """
-    Ejecuta la conversión de video usando los parámetros de argparse.
+    Execute the conversion of a video file.
+
+    Args:
+        args (Namespace): the command arguments and flags
+        console (Console): Console object from rich
+        settings (Settings): Settings object
+        logger (Logger): Logger object
+        
+    Returns:
+        None
     """
     # Mapear resolución (int -> Enum)
     resolution_map = {
@@ -43,20 +53,19 @@ def run_convert(args: Namespace, console: Console, settings: Settings) -> None:
     # Threads
     threads = 1 if args.cool_mode else (args.threads or 1)
 
-    # Analizar el video primero para obtener VideoFileInfo
+    logger.info("Starting Analysis")
     input_path = Path(args.input)
-    analyzer = VideoAnalyzerService(input_path)
+    analyzer = VideoAnalyzerService(input_path, logger=logger)
     video_info = analyzer.analyze()
     if not video_info:
-        console.print(f"[red]Error:[/red] No se pudo analizar el archivo {input_path}")
+        logger.error(f"Failed at analyzing file: {input_path}")
+        console.print(f"[red]Error:[/red] Failed at analyzing file: {input_path}")
         return
 
-    # Determinar directorio de salida
     output_dir = Path(args.output).parent if args.output else settings.app_settings.output_dir
+    service = VideoConverterService(video_info, output_dir=output_dir, settings=settings, logger=logger)
 
-    # Crear servicio de conversión
-    service = VideoConverterService(video_info, output_dir=output_dir, settings=settings)
-
+    logger.info("Starting Conversion")
     result: ConversionResult = service.convert_with_progress_bar(
         crf=args.crf or 23,
         preset=preset,

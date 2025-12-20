@@ -1,6 +1,6 @@
 import subprocess
-import logging
 import json
+from logging import Logger
 from pathlib import Path
 from typing import List, Dict, Optional
 from animelight.models.video_file import VideoFileInfo
@@ -9,9 +9,9 @@ class VideoAnalyzerService:
     """
     Analyzes a video file and returns its information.
     """
-    def __init__(self, file_path: Path):
+    def __init__(self, file_path: Path, logger: Logger = None):
         self.file_path = file_path
-        self.logger = logging.getLogger(self.__class__.__name__)
+        self.logger = logger
         self.data = self.get_raw_info()
 
     def get_raw_info(self) -> dict:

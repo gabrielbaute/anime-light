@@ -16,9 +16,11 @@ from animelight.cli.commands import (
     CommandHelp
     )
 
+settings = Settings()
 
 def main() -> None:
-    settings = Settings()
+    logger_factory = AnimeLightLogger(settings)
+    logger = logger_factory.get_logger()
     parser = create_parser()
     console = Console()
     help = CommandHelp(console=console)
@@ -42,7 +44,7 @@ def main() -> None:
         show_sysinfo(console=console)
 
     elif args.command == "convert":
-        run_convert(args, console=console, settings=settings)
+        run_convert(args, console=console, settings=settings, logger=logger)
 
     elif args.command == "init":
         init_settings(args, console=console)
@@ -51,7 +53,7 @@ def main() -> None:
         show_settings(console=console, settings=settings)
     
     elif args.command == "clean":
-        clean_directories(args, console=console, settings=settings)
+        clean_directories(args, console=console, settings=settings, logger=logger)
 
     elif args.command == "help":
         help.print_help()
