@@ -17,7 +17,7 @@ from animelight.enums import (
 )
 from animelight.models import ConversionResult
 from animelight.settings import Settings
-from animelight.services import VideoAnalyzerService, VideoConverterService
+from animelight.services import VideoAnalyzerService, VideoConverterService, ConversionArgsParser
 
 def run_convert(args: Namespace, console: Console, settings: Settings, logger: Logger = None) -> None:
     """
@@ -31,21 +31,14 @@ def run_convert(args: Namespace, console: Console, settings: Settings, logger: L
         
     Returns:
         None
-    """
-    resolution_map = {
-        360: VideoResolution.P_360,
-        480: VideoResolution.P_480,
-        720: VideoResolution.P_720,
-        1080: VideoResolution.P_1080,
-    }
-    
-    scale = resolution_map.get(args.resolution, VideoResolution.P_720)
-    preset = FfmpegPresets(args.preset) if args.preset else FfmpegPresets.MEDIUM
+    """    
+    scale = ConversionArgsParser.parse_resolution(args.resolution) if args.resolution else VideoResolution.P_720
+    preset = ConversionArgsParser.parse_ffmpeg_preset(args.preset) if args.preset else FfmpegPresets.MEDIUM
     
     gpu_method = None
     if args.use_gpu:
         # TODO: lógica más avanzada con sysinfo
-        gpu_method = GPUMethods.NVIDIA  # por defecto
+        gpu_method = ConversionArgsParser.parse_gpu_method(args.use_gpu)
 
     # Threads
     threads = 1 if args.cool_mode else (args.threads or 1)
